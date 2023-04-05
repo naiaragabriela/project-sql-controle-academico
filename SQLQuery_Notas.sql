@@ -105,7 +105,7 @@ select * from Disciplina
     where a.nome = 'Giovani'
 
 
---Cadastros de Notas na tabela
+--Cadastros de Notas na tabela 
 
     UPDATE Item_Matricula SET Nota_1 = 9, Nota_2 = 7, Sub = Null
     Where Id = 1 and Codigo = 2
@@ -126,7 +126,7 @@ select * from Disciplina
 
 
 
---calculo da media
+--calculo da media usando select
 
     SELECT m.Ano, m.Semestre, m.id, a.Nome, d.Nome, im.Nota_1, im.Nota_2, im.Sub, im.Faltas,
     CASE 
@@ -150,7 +150,7 @@ select * from Disciplina
     Where Id = 2 and Codigo = 1
     SELECT * from Item_Matricula;
 
---calculo reprovacao por falta
+--calculo reprovacao por falta usando apenas select
 
     SELECT m.Ano, m.Semestre, m.id, a.Nome, d.Nome, im.Nota_1, im.Nota_2, im.Sub, im.Faltas,
     CASE 
@@ -161,3 +161,28 @@ select * from Disciplina
     JOIN Item_Matricula im on m.ID = im.ID
     JOIN Disciplina d ON im.Codigo = d.Codigo 
     Where a.Nome = 'Ana Maria'
+
+
+--adicionando uma coluna na tabela 
+
+ALTER TABLE Item_Matricula ADD 
+    Media DECIMAL (4,2)
+   GO 
+
+
+--criacao trigger para calcular media depois de uma insercao
+
+CREATE OR ALTER TRIGGER TGR_Media_Insert ON Item_Matricula AFTER INSERT
+AS 
+BEGIN
+    DECLARE @Id INT, @Codigo INT, @Nota_1 DECIMAL, @Nota_2 DECIMAL, @Media DECIMAL
+
+    SELECT @Id = Id, @Codigo = Codigo,  @Nota_1 = Nota_1, @Nota_2 = Nota_2 FROM inserted
+
+    SET @Media  = (@Nota_1 + @Nota_2)/2
+
+    UPDATE Item_Matricula SET Media = @Media
+
+    WHERE Id = @Id And Codigo = @Codigo
+
+END;
