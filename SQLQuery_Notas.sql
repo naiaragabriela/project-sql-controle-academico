@@ -90,7 +90,7 @@ select * from Disciplina
     insert into Item_Matricula (id, codigo, faltas, situacao) values (1, 2, 0, 'matriculado')
     insert into Item_Matricula (id, codigo, faltas, situacao) values (2, 1, 0, 'matriculado')
     SELECT * from Item_Matricula;
-
+    SELECT * FROM Aluno;
 
     select m.Ano, m.Semestre, m.id, a.Nome, d.Nome 
     from Aluno a JOIN Matricula m on a.RA = m.RA 
@@ -172,7 +172,7 @@ ALTER TABLE Item_Matricula ADD
 
 --criacao trigger para calcular media depois de uma insercao
 
-CREATE OR ALTER TRIGGER TGR_Media_Insert ON Item_Matricula AFTER INSERT
+CREATE OR ALTER TRIGGER TGR_Media_Update ON Item_Matricula AFTER UPDATE
 AS 
 BEGIN
     DECLARE @Id INT, @Codigo INT, @Nota_1 DECIMAL, @Nota_2 DECIMAL, @Media DECIMAL
@@ -186,3 +186,14 @@ BEGIN
     WHERE Id = @Id And Codigo = @Codigo
 
 END;
+
+    
+INSERT Item_Matricula (Id, Codigo, Faltas, Situacao ) Values (3,2,0,'matriculado')
+INSERT Item_Matricula (Id, Codigo, Faltas, Situacao ) Values (3,1,0,'matriculado')
+
+UPDATE Item_Matricula SET Nota_1 = 6, Nota_2 = 8 WHERE Id = 3 AND Codigo = 2
+UPDATE Item_Matricula SET Nota_1 = 6, Nota_2 = 8 WHERE Id = 3 AND Codigo = 1
+
+
+SELECT * FROM Item_Matricula
+    
