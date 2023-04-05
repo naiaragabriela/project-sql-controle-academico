@@ -292,11 +292,18 @@ BEGIN
     BEGIN
         DECLARE @Id INT, @Codigo INT, @CargaHoraria INT, @Faltas INT, @Situacao VARCHAR (19)
 
-        SELECT @Id = Id, @Codigo = Codigo, @Faltas = Faltas FROM inserted
-        SELECT @CargaHoraria = CargaHoraria FROM Disciplina where Codigo = @Codigo
+
+        --selecionar tabelas usando join
+
+        Select @Id = Id, @Codigo = i.Codigo, @Faltas = Faltas, @CargaHoraria = d.CargaHoraria
+        from inserted i JOIN Disciplina d ON @Codigo = i.Codigo
+
+        --selecionando as duas tabelas
+        --SELECT @Id = Id, @Codigo = Codigo, @Faltas = Faltas FROM inserted
+        --SELECT @CargaHoraria = CargaHoraria FROM Disciplina where Codigo = @Codigo
 
         SET @Situacao = CASE
-    WHEN (@Faltas > @CargaHoraria/2) THEN 
+    WHEN (@Faltas > (@CargaHoraria/2)) THEN 
     'Reprovado por falta'
     END
     UPDATE Item_Matricula SET Situacao = @Situacao
@@ -305,5 +312,5 @@ BEGIN
 END;
 GO
 
-UPDATE Item_Matricula SET Faltas = 71 WHERE Id = 2 AND Codigo = 1
+UPDATE Item_Matricula SET Faltas = 68 WHERE Id = 2 AND Codigo = 1
 SELECT * FROM Item_Matricula
